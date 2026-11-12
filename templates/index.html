@@ -4,32 +4,67 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>HelpDesk TI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpDesk TI | Painel</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background: #f1f3f5;
-            margin: 40px;
+            margin: 0;
+            padding: 30px;
+            color: #263238;
         }
 
         h1 {
             color: #1d3557;
         }
 
-        .container {
+        .cabecalho {
+            margin-bottom: 25px;
+        }
+
+        .painel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .card {
             background: white;
             padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #1d3557;
+        }
+
+        .card h2 {
+            font-size: 28px;
+            margin: 10px 0;
+        }
+
+        .card p {
+            color: #666;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 22px;
             border-radius: 10px;
             margin-bottom: 20px;
         }
 
         input, textarea, select, button {
-            display: block;
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            box-sizing: border-box;
+            padding: 11px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
 
         button {
@@ -37,7 +72,23 @@
             color: white;
             border: none;
             cursor: pointer;
-            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #294b78;
+        }
+
+        .filtros {
+            display: grid;
+            grid-template-columns: 1fr 1fr 150px 100px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .limpar {
+            color: #1d3557;
+            text-decoration: none;
+            text-align: center;
         }
 
         .chamado {
@@ -45,45 +96,121 @@
             padding: 15px 0 20px;
         }
 
-        .status-form {
-            max-width: 350px;
-        }
-
         .botao-editar {
             display: block;
             background: #1d3557;
             color: white;
-            padding: 12px;
+            padding: 11px;
             text-align: center;
             text-decoration: none;
             border-radius: 5px;
             margin: 10px 0;
         }
-    </style>
 
+        .status-form {
+            max-width: 350px;
+        }
+
+        @media (max-width: 750px) {
+            body {
+                padding: 15px;
+            }
+
+            .painel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filtros {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+.badge-status {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.aberto {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.andamento {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.concluido {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.prioridade-alta {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.prioridade-media {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.prioridade-baixa {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+    </style>
 </head>
 
 <body>
 
-    <h1>HelpDesk TI</h1>
-    <p>Sistema de gerenciamento de chamados técnicos</p>
+    <div class="cabecalho">
+        <h1>HelpDesk TI</h1>
+        <p>Painel de gerenciamento de chamados técnicos</p>
+    </div>
 
-    <!-- Cadastro de chamados -->
+    <!-- Indicadores -->
+    <div class="painel">
+
+        <div class="card">
+            <p>Total de chamados</p>
+            <h2>{{ total }}</h2>
+        </div>
+
+        <div class="card">
+            <p>Abertos</p>
+            <h2>{{ abertos }}</h2>
+        </div>
+
+        <div class="card">
+            <p>Em andamento</p>
+            <h2>{{ andamento }}</h2>
+        </div>
+
+        <div class="card">
+            <p>Concluídos</p>
+            <h2>{{ concluidos }}</h2>
+        </div>
+
+    </div>
+
+    <!-- Cadastro -->
     <div class="container">
 
         <h2>Novo chamado</h2>
 
         <form action="/cadastrar" method="POST">
 
-            <input type="text"
-                   name="solicitante"
-                   placeholder="Nome do solicitante"
-                   required>
+            <input type="text" name="solicitante"
+                   placeholder="Nome do solicitante" required>
 
-            <input type="text"
-                   name="titulo"
-                   placeholder="Título do problema"
-                   required>
+            <input type="text" name="titulo"
+                   placeholder="Título do problema" required>
 
             <textarea name="descricao"
                       placeholder="Descreva o problema"
@@ -95,15 +222,66 @@
                 <option value="Alta">Alta</option>
             </select>
 
-            <button type="submit">
-                Cadastrar chamado
-            </button>
+            <button type="submit">Cadastrar chamado</button>
 
         </form>
 
     </div>
 
-    <!-- Listagem de chamados -->
+    <!-- Filtros -->
+    <div class="container">
+
+        <h2>Filtrar chamados</h2>
+
+        <form action="/" method="GET" class="filtros">
+
+            <select name="status">
+                <option value="">Todos os status</option>
+
+                <option value="Aberto"
+                {% if status_selecionado == 'Aberto' %}selected{% endif %}>
+                    Aberto
+                </option>
+
+                <option value="Em andamento"
+                {% if status_selecionado == 'Em andamento' %}selected{% endif %}>
+                    Em andamento
+                </option>
+
+                <option value="Concluído"
+                {% if status_selecionado == 'Concluído' %}selected{% endif %}>
+                    Concluído
+                </option>
+            </select>
+
+            <select name="prioridade">
+                <option value="">Todas as prioridades</option>
+
+                <option value="Baixa"
+                {% if prioridade_selecionada == 'Baixa' %}selected{% endif %}>
+                    Baixa
+                </option>
+
+                <option value="Media"
+                {% if prioridade_selecionada == 'Media' %}selected{% endif %}>
+                    Média
+                </option>
+
+                <option value="Alta"
+                {% if prioridade_selecionada == 'Alta' %}selected{% endif %}>
+                    Alta
+                </option>
+            </select>
+
+            <button type="submit">Filtrar</button>
+
+            <a href="/" class="limpar">Limpar filtros</a>
+
+        </form>
+
+    </div>
+
+    <!-- Listagem -->
     <div class="container">
 
         <h2>Chamados cadastrados</h2>
@@ -114,29 +292,37 @@
 
                 <h3>#{{ chamado[0] }} - {{ chamado[2] }}</h3>
 
-                <p>
-                    <b>Solicitante:</b> {{ chamado[1] }}
-                </p>
+                <p><b>Solicitante:</b> {{ chamado[1] }}</p>
+                <p><b>Descrição:</b> {{ chamado[3] }}</p>
 
-                <p>
-                    <b>Descrição:</b> {{ chamado[3] }}
-                </p>
+<p>
+    <b>Prioridade:</b>
 
-                <p>
-                    <b>Prioridade:</b> {{ chamado[4] }}
-                </p>
+    <span class="badge-status
+        {% if chamado[4] == 'Alta' %}prioridade-alta
+        {% elif chamado[4] == 'Media' %}prioridade-media
+        {% else %}prioridade-baixa{% endif %}">
+        {{ chamado[4] }}
+    </span>
+</p>
 
-                <p>
-                    <b>Status atual:</b> {{ chamado[5] }}
-                </p>
+<p>
+    <b>Status:</b>
 
-                <!-- Botão de edição -->
+    <span class="badge-status
+        {% if chamado[5] == 'Aberto' %}aberto
+        {% elif chamado[5] == 'Em andamento' %}andamento
+        {% else %}concluido{% endif %}">
+        {{ chamado[5] }}
+    </span>
+</p>
+
+          
                 <a class="botao-editar"
                    href="/editar/{{ chamado[0] }}">
                     Editar chamado
                 </a>
 
-                <!-- Alteração de status -->
                 <form class="status-form"
                       action="/atualizar/{{ chamado[0] }}"
                       method="POST">
@@ -162,9 +348,7 @@
 
                     </select>
 
-                    <button type="submit">
-                        Salvar alteração
-                    </button>
+                    <button type="submit">Salvar alteração</button>
 
                 </form>
 
@@ -172,7 +356,7 @@
 
         {% else %}
 
-            <p>Nenhum chamado cadastrado.</p>
+            <p>Nenhum chamado encontrado.</p>
 
         {% endfor %}
 

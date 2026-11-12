@@ -4,12 +4,11 @@ import sqlite3
 
 app = Flask(__name__)
 
-# Conexão com o banco de dados
+
 def conectar():
     return sqlite3.connect("database.db")
 
 
-# Criação do banco de dados
 def criar_banco():
     banco = conectar()
 
@@ -28,18 +27,59 @@ def criar_banco():
     banco.close()
 
 
-# Página inicial: listar chamados
+# Página inicial e painel administrativo
 @app.route("/")
 def inicio():
     banco = conectar()
 
-    chamados = banco.execute(
-        "SELECT * FROM chamados ORDER BY id DESC"
-    ).fetchall()
+    # Filtros
+    status = request.args.get("status", "")
+    prioridade = request.args.get("prioridade", "")
+
+    sql = "SELECT * FROM chamados WHERE 1=1"
+    parametros = []
+
+    if status:
+        sql += " AND status = ?"
+        parametros.append(status)
+
+    if prioridade:
+        sql += " AND prioridade = ?"
+        parametros.append(prioridade)
+
+    sql += " ORDER BY id DESC"
+
+    chamados = banco.execute(sql, parametros).fetchall()
+
+    # Indicadores do painel
+    total = banco.execute(
+        "SELECT COUNT(*) FROM chamados"
+    ).fetchone()[0]
+
+    abertos = banco.execute(
+        "SELECT COUNT(*) FROM chamados WHERE status = 'Aberto'"
+    ).fetchone()[0]
+
+    andamento = banco.execute(
+        "SELECT COUNT(*) FROM chamados WHERE status = 'Em andamento'"
+    ).fetchone()[0]
+
+    concluidos = banco.execute(
+        "SELECT COUNT(*) FROM chamados WHERE status = 'Concluído'"
+    ).fetchone()[0]
 
     banco.close()
 
-    return render_template("index.html", chamados=chamados)
+    return render_template(
+        "index.html",
+        chamados=chamados,
+        total=total,
+        abertos=abertos,
+        andamento=andamento,
+        concluidos=concluidos,
+        status_selecionado=status,
+        prioridade_selecionada=prioridade
+    )
 
 
 # Cadastrar chamado
@@ -87,7 +127,7 @@ def atualizar(id):
     return redirect("/")
 
 
-# Editar informações do chamado
+# Editar chamado
 @app.route("/editar/<int:id>", methods=["GET", "POST"])
 def editar(id):
     banco = conectar()
@@ -125,7 +165,6 @@ def editar(id):
     return render_template("editar.html", chamado=chamado)
 
 
-# Inicialização do sistema
 if __name__ == "__main__":
     criar_banco()
     app.run(debug=True)
