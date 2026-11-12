@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>HelpDesk TI</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f1f3f5;
+            margin: 40px;
+        }
+
+        h1 {
+            color: #1d3557;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        input, textarea, select, button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #1d3557;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .chamado {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>HelpDesk TI</h1>
+<p>Sistema de gerenciamento de chamados técnicos</p>
+
+<div class="container">
+    <h2>Novo chamado</h2>
+
+    <form action="/cadastrar" method="POST">
+
+        <input type="text" name="solicitante"
+        placeholder="Nome do solicitante" required>
+
+        <input type="text" name="titulo"
+        placeholder="Título do problema" required>
+
+        <textarea name="descricao"
+        placeholder="Descreva o problema" required></textarea>
+
+        <select name="prioridade">
+            <option value="Baixa">Baixa</option>
+            <option value="Media">Média</option>
+            <option value="Alta">Alta</option>
+        </select>
+
+        <button type="submit">Cadastrar chamado</button>
+
+    </form>
+</div>
+
+<div class="container">
+    <h2>Chamados cadastrados</h2>
+
+    {% for chamado in chamados %}
+
+    <div class="chamado">
+        <h3>#{{ chamado[0] }} - {{ chamado[2] }}</h3>
+
+        <p><b>Solicitante:</b> {{ chamado[1] }}</p>
+        <p><b>Descrição:</b> {{ chamado[3] }}</p>
+        <p><b>Prioridade:</b> {{ chamado[4] }}</p>
+        <p><b>Status:</b> {{ chamado[5] }}</p>
+    </div>
+
+    {% else %}
+
+    <p>Nenhum chamado cadastrado.</p>
+
+    {% endfor %}
+</div>
+
+</body>
+</html>
