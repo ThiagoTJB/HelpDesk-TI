@@ -1,13 +1,14 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <title>HelpDesk TI</title>
 
     <style>
         body {
-            font-family: Arial;
+            font-family: Arial, sans-serif;
             background: #f1f3f5;
             margin: 40px;
         }
@@ -41,94 +42,141 @@
 
         .chamado {
             border-bottom: 1px solid #ddd;
-            padding: 10px 0 20px;
+            padding: 15px 0 20px;
         }
 
         .status-form {
             max-width: 350px;
         }
+
+        .botao-editar {
+            display: block;
+            background: #1d3557;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
     </style>
+
 </head>
 
 <body>
 
-<h1>HelpDesk TI</h1>
-<p>Sistema de gerenciamento de chamados técnicos</p>
+    <h1>HelpDesk TI</h1>
+    <p>Sistema de gerenciamento de chamados técnicos</p>
 
-<div class="container">
-    <h2>Novo chamado</h2>
+    <!-- Cadastro de chamados -->
+    <div class="container">
 
-    <form action="/cadastrar" method="POST">
+        <h2>Novo chamado</h2>
 
-        <input type="text" name="solicitante"
-        placeholder="Nome do solicitante" required>
+        <form action="/cadastrar" method="POST">
 
-        <input type="text" name="titulo"
-        placeholder="Título do problema" required>
+            <input type="text"
+                   name="solicitante"
+                   placeholder="Nome do solicitante"
+                   required>
 
-        <textarea name="descricao"
-        placeholder="Descreva o problema" required></textarea>
+            <input type="text"
+                   name="titulo"
+                   placeholder="Título do problema"
+                   required>
 
-        <select name="prioridade">
-            <option value="Baixa">Baixa</option>
-            <option value="Media">Média</option>
-            <option value="Alta">Alta</option>
-        </select>
+            <textarea name="descricao"
+                      placeholder="Descreva o problema"
+                      required></textarea>
 
-        <button type="submit">Cadastrar chamado</button>
-
-    </form>
-</div>
-
-<div class="container">
-    <h2>Chamados cadastrados</h2>
-
-    {% for chamado in chamados %}
-
-    <div class="chamado">
-
-        <h3>#{{ chamado[0] }} - {{ chamado[2] }}</h3>
-
-        <p><b>Solicitante:</b> {{ chamado[1] }}</p>
-        <p><b>Descrição:</b> {{ chamado[3] }}</p>
-        <p><b>Prioridade:</b> {{ chamado[4] }}</p>
-        <p><b>Status atual:</b> {{ chamado[5] }}</p>
-
-        <form class="status-form"
-              action="/atualizar/{{ chamado[0] }}"
-              method="POST">
-
-            <label>Alterar status:</label>
-
-            <select name="status">
-                <option value="Aberto"
-                    {% if chamado[5] == 'Aberto' %}selected{% endif %}>
-                    Aberto
-                </option>
-
-                <option value="Em andamento"
-                    {% if chamado[5] == 'Em andamento' %}selected{% endif %}>
-                    Em andamento
-                </option>
-
-                <option value="Concluído"
-                    {% if chamado[5] == 'Concluído' %}selected{% endif %}>
-                    Concluído
-                </option>
+            <select name="prioridade">
+                <option value="Baixa">Baixa</option>
+                <option value="Media">Média</option>
+                <option value="Alta">Alta</option>
             </select>
 
-            <button type="submit">Salvar alteração</button>
+            <button type="submit">
+                Cadastrar chamado
+            </button>
 
         </form>
 
     </div>
 
-    {% else %}
+    <!-- Listagem de chamados -->
+    <div class="container">
 
-    <p>Nenhum chamado cadastrado.</p>
+        <h2>Chamados cadastrados</h2>
 
-    {% endfor %}
-</div>
+        {% for chamado in chamados %}
+
+            <div class="chamado">
+
+                <h3>#{{ chamado[0] }} - {{ chamado[2] }}</h3>
+
+                <p>
+                    <b>Solicitante:</b> {{ chamado[1] }}
+                </p>
+
+                <p>
+                    <b>Descrição:</b> {{ chamado[3] }}
+                </p>
+
+                <p>
+                    <b>Prioridade:</b> {{ chamado[4] }}
+                </p>
+
+                <p>
+                    <b>Status atual:</b> {{ chamado[5] }}
+                </p>
+
+                <!-- Botão de edição -->
+                <a class="botao-editar"
+                   href="/editar/{{ chamado[0] }}">
+                    Editar chamado
+                </a>
+
+                <!-- Alteração de status -->
+                <form class="status-form"
+                      action="/atualizar/{{ chamado[0] }}"
+                      method="POST">
+
+                    <label>Alterar status:</label>
+
+                    <select name="status">
+
+                        <option value="Aberto"
+                        {% if chamado[5] == 'Aberto' %}selected{% endif %}>
+                            Aberto
+                        </option>
+
+                        <option value="Em andamento"
+                        {% if chamado[5] == 'Em andamento' %}selected{% endif %}>
+                            Em andamento
+                        </option>
+
+                        <option value="Concluído"
+                        {% if chamado[5] == 'Concluído' %}selected{% endif %}>
+                            Concluído
+                        </option>
+
+                    </select>
+
+                    <button type="submit">
+                        Salvar alteração
+                    </button>
+
+                </form>
+
+            </div>
+
+        {% else %}
+
+            <p>Nenhum chamado cadastrado.</p>
+
+        {% endfor %}
+
+    </div>
 
 </body>
 </html>

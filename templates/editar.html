@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar chamado - HelpDesk TI</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f1f3f5;
+            margin: 40px;
+        }
+
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 700px;
+        }
+
+        h1 {
+            color: #1d3557;
+        }
+
+        input, textarea, select, button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #1d3557;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        a {
+            color: #1d3557;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Editar chamado #{{ chamado[0] }}</h1>
+
+    <form method="POST">
+
+        <label>Solicitante</label>
+        <input type="text" name="solicitante"
+        value="{{ chamado[1] }}" required>
+
+        <label>Título</label>
+        <input type="text" name="titulo"
+        value="{{ chamado[2] }}" required>
+
+        <label>Descrição</label>
+        <textarea name="descricao"
+        required>{{ chamado[3] }}</textarea>
+
+        <label>Prioridade</label>
+        <select name="prioridade">
+
+            <option value="Baixa"
+            {% if chamado[4] == 'Baixa' %}selected{% endif %}>
+                Baixa
+            </option>
+
+            <option value="Media"
+            {% if chamado[4] == 'Media' %}selected{% endif %}>
+                Média
+            </option>
+
+            <option value="Alta"
+            {% if chamado[4] == 'Alta' %}selected{% endif %}>
+                Alta
+            </option>
+
+        </select>
+
+        <button type="submit">Salvar alterações</button>
+
+    </form>
+
+    <a href="/">Voltar para os chamados</a>
+
+</div>
+
+</body>
+</html>
