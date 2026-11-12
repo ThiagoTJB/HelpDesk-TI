@@ -5,10 +5,12 @@ import sqlite3
 app = Flask(__name__)
 
 
+# Conexão com o banco de dados
 def conectar():
     return sqlite3.connect("database.db")
 
 
+# Criar banco de dados e verificar colunas
 def criar_banco():
     banco = conectar()
 
@@ -21,6 +23,28 @@ def criar_banco():
             prioridade TEXT NOT NULL,
             status TEXT DEFAULT 'Aberto'
         )
+    """)
+
+    # Verificar se a coluna de data existe
+    colunas = banco.execute(
+        "PRAGMA table_info(chamados)"
+    ).fetchall()
+
+    nomes_colunas = [coluna[1] for coluna in colunas]
+
+    if "data_abertura" not in nomes_colunas:
+        banco.execute("""
+            ALTER TABLE chamados
+            ADD COLUMN data_abertura TEXT
+        """)
+
+    # Preencher data dos chamados antigos
+    banco.execute("""
+        UPDATE chamados
+        SET data_abertura = strftime(
+            '%d/%m/%Y %H:%M', 'now', 'localtime'
+        )
+        WHERE data_abertura IS NULL
     """)
 
     banco.commit()
@@ -94,8 +118,8 @@ def cadastrar():
 
     banco.execute("""
         INSERT INTO chamados
-        (solicitante, titulo, descricao, prioridade)
-        VALUES (?, ?, ?, ?)
+        (solicitante, titulo, descricao, prioridade, data_abertura)
+        VALUES (?, ?, ?, ?, strftime('%d/%m/%Y %H:%M', 'now', 'localtime'))
     """, (solicitante, titulo, descricao, prioridade))
 
     banco.commit()
@@ -165,6 +189,7 @@ def editar(id):
     return render_template("editar.html", chamado=chamado)
 
 
+# Executar aplicação
 if __name__ == "__main__":
     criar_banco()
     app.run(debug=True)
