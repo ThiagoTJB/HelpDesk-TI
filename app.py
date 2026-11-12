@@ -151,6 +151,22 @@ def atualizar(id):
     return redirect("/")
 
 
+# Excluir chamado
+@app.route("/excluir/<int:id>", methods=["POST"])
+def excluir(id):
+    banco = conectar()
+
+    banco.execute(
+        "DELETE FROM chamados WHERE id = ?",
+        (id,)
+    )
+
+    banco.commit()
+    banco.close()
+
+    return redirect("/")
+
+
 # Editar chamado
 @app.route("/editar/<int:id>", methods=["GET", "POST"])
 def editar(id):

@@ -288,6 +288,12 @@
 
         {% for chamado in chamados %}
 
+        
+        <form action="/excluir/{{ chamado[0] }}" method="POST"
+      onsubmit="return confirm('Tem certeza que deseja excluir este chamado?');">
+    <button type="submit">Excluir chamado</button>
+</form>
+
             <div class="chamado">
 
                 <h3>#{{ chamado[0] }} - {{ chamado[2] }}</h3>
