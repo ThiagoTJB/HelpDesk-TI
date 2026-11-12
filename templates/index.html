@@ -164,6 +164,24 @@
     color: #15803d;
 }
 
+
+.mensagem {
+    padding: 12px;
+    margin: 15px 0;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.mensagem.sucesso {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.mensagem.erro {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
     </style>
 </head>
 
@@ -288,7 +306,7 @@
 
         {% for chamado in chamados %}
 
-        
+
         <form action="/excluir/{{ chamado[0] }}" method="POST"
       onsubmit="return confirm('Tem certeza que deseja excluir este chamado?');">
     <button type="submit">Excluir chamado</button>

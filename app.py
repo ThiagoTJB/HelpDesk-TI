@@ -1,8 +1,10 @@
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 import sqlite3
 
 app = Flask(__name__)
+
+app.secret_key = "helpdesk-ti-chave"
 
 
 # Conexão com o banco de dados
@@ -109,10 +111,25 @@ def inicio():
 # Cadastrar chamado
 @app.route("/cadastrar", methods=["POST"])
 def cadastrar():
-    solicitante = request.form["solicitante"]
-    titulo = request.form["titulo"]
-    descricao = request.form["descricao"]
+    solicitante = request.form["solicitante"].strip()
+    titulo = request.form["titulo"].strip()
+    descricao = request.form["descricao"].strip()
     prioridade = request.form["prioridade"]
+
+    # Validar campos obrigatórios
+    if not solicitante or not titulo or not descricao:
+        flash(
+            "Preencha todos os campos obrigatórios!",
+            "erro"
+        )
+        return redirect("/")
+
+    # Validar prioridade
+    prioridades_validas = ["Baixa", "Média", "Alta"]
+
+    if prioridade not in prioridades_validas:
+        flash("Prioridade inválida!", "erro")
+        return redirect("/")
 
     banco = conectar()
 
@@ -125,6 +142,8 @@ def cadastrar():
     banco.commit()
     banco.close()
 
+    flash("Chamado cadastrado com sucesso!", "sucesso")
+
     return redirect("/")
 
 
@@ -133,7 +152,11 @@ def cadastrar():
 def atualizar(id):
     status = request.form["status"]
 
-    status_validos = ["Aberto", "Em andamento", "Concluído"]
+    status_validos = [
+        "Aberto",
+        "Em andamento",
+        "Concluído"
+    ]
 
     if status not in status_validos:
         return "Status inválido", 400
@@ -173,10 +196,23 @@ def editar(id):
     banco = conectar()
 
     if request.method == "POST":
-        solicitante = request.form["solicitante"]
-        titulo = request.form["titulo"]
-        descricao = request.form["descricao"]
+        solicitante = request.form["solicitante"].strip()
+        titulo = request.form["titulo"].strip()
+        descricao = request.form["descricao"].strip()
         prioridade = request.form["prioridade"]
+
+        # Validar campos obrigatórios
+        if not solicitante or not titulo or not descricao:
+            banco.close()
+            flash("Preencha todos os campos obrigatórios!", "erro")
+            return redirect(f"/editar/{id}")
+
+        prioridades_validas = ["Baixa", "Média", "Alta"]
+
+        if prioridade not in prioridades_validas:
+            banco.close()
+            flash("Prioridade inválida!", "erro")
+            return redirect(f"/editar/{id}")
 
         banco.execute("""
             UPDATE chamados
@@ -190,6 +226,7 @@ def editar(id):
         banco.commit()
         banco.close()
 
+        flash("Chamado atualizado com sucesso!", "sucesso")
         return redirect("/")
 
     chamado = banco.execute(
