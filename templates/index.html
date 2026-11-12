@@ -36,11 +36,16 @@
             color: white;
             border: none;
             cursor: pointer;
+            border-radius: 5px;
         }
 
         .chamado {
             border-bottom: 1px solid #ddd;
-            padding: 10px 0;
+            padding: 10px 0 20px;
+        }
+
+        .status-form {
+            max-width: 350px;
         }
     </style>
 </head>
@@ -81,12 +86,41 @@
     {% for chamado in chamados %}
 
     <div class="chamado">
+
         <h3>#{{ chamado[0] }} - {{ chamado[2] }}</h3>
 
         <p><b>Solicitante:</b> {{ chamado[1] }}</p>
         <p><b>Descrição:</b> {{ chamado[3] }}</p>
         <p><b>Prioridade:</b> {{ chamado[4] }}</p>
-        <p><b>Status:</b> {{ chamado[5] }}</p>
+        <p><b>Status atual:</b> {{ chamado[5] }}</p>
+
+        <form class="status-form"
+              action="/atualizar/{{ chamado[0] }}"
+              method="POST">
+
+            <label>Alterar status:</label>
+
+            <select name="status">
+                <option value="Aberto"
+                    {% if chamado[5] == 'Aberto' %}selected{% endif %}>
+                    Aberto
+                </option>
+
+                <option value="Em andamento"
+                    {% if chamado[5] == 'Em andamento' %}selected{% endif %}>
+                    Em andamento
+                </option>
+
+                <option value="Concluído"
+                    {% if chamado[5] == 'Concluído' %}selected{% endif %}>
+                    Concluído
+                </option>
+            </select>
+
+            <button type="submit">Salvar alteração</button>
+
+        </form>
+
     </div>
 
     {% else %}

@@ -51,6 +51,25 @@ def cadastrar():
 
     return redirect("/")
 
+@app.route("/atualizar/<int:id>", methods=["POST"])
+def atualizar(id):
+    status = request.form["status"]
+
+    status_validos = ["Aberto", "Em andamento", "Concluído"]
+
+    if status not in status_validos:
+        return "Status inválido", 400
+
+    banco = conectar()
+    banco.execute(
+        "UPDATE chamados SET status = ? WHERE id = ?",
+        (status, id)
+    )
+    banco.commit()
+    banco.close()
+
+    return redirect("/")
+
 if __name__ == "__main__":
     criar_banco()
     app.run(debug=True)
