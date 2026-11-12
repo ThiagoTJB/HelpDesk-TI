@@ -61,6 +61,7 @@ def inicio():
     # Filtros
     status = request.args.get("status", "")
     prioridade = request.args.get("prioridade", "")
+    busca = request.args.get("busca", "")
 
     sql = "SELECT * FROM chamados WHERE 1=1"
     parametros = []
@@ -73,9 +74,16 @@ def inicio():
         sql += " AND prioridade = ?"
         parametros.append(prioridade)
 
+        
+
     sql += " ORDER BY id DESC"
 
+
+    
+
     chamados = banco.execute(sql, parametros).fetchall()
+
+    
 
     # Indicadores do painel
     total = banco.execute(
