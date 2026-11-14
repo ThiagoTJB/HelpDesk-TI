@@ -48,7 +48,16 @@ def criar_banco():
         )
         WHERE data_abertura IS NULL
     """)
-
+    # Criar tabela de histórico
+    banco.execute("""
+        CREATE TABLE IF NOT EXISTS historico (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            chamado_id INTEGER,
+            acao TEXT NOT NULL,
+            descricao TEXT NOT NULL,
+            data_hora TEXT NOT NULL
+        )
+    """)
     banco.commit()
     banco.close()
 
@@ -163,6 +172,19 @@ def cadastrar():
     """, (solicitante, titulo, descricao, prioridade))
 
     banco.commit()
+
+    # Registrar cadastro no histórico
+    banco.execute("""
+        INSERT INTO historico
+        (chamado_id, acao, descricao, data_hora)
+        VALUES (?, ?, ?, strftime('%d/%m/%Y %H:%M', 'now', 'localtime'))
+    """, (
+        banco.execute("SELECT last_insert_rowid()").fetchone()[0],
+        "Cadastro",
+        f"Chamado cadastrado por {solicitante}: {titulo}"
+    ))
+
+    banco.commit()
     banco.close()
 
     flash("Chamado cadastrado com sucesso!", "sucesso")
@@ -185,11 +207,35 @@ def atualizar(id):
         return "Status inválido", 400
 
     banco = conectar()
+    # Consultar status anterior
+    chamado = banco.execute(
+        "SELECT status FROM chamados WHERE id = ?",
+        (id,)
+    ).fetchone()
 
+    if chamado is None:
+        banco.close()
+        return "Chamado não encontrado", 404
+
+    status_anterior = chamado[0]
+
+    # Atualizar status
     banco.execute(
         "UPDATE chamados SET status = ? WHERE id = ?",
         (status, id)
     )
+
+    # Registrar alteração no histórico
+    if status_anterior != status:
+        banco.execute("""
+            INSERT INTO historico
+            (chamado_id, acao, descricao, data_hora)
+            VALUES (?, ?, ?, strftime('%d/%m/%Y %H:%M', 'now', 'localtime'))
+        """, (
+            id,
+            "Alteração de status",
+            f"Status alterado de {status_anterior} para {status}"
+        ))
 
     banco.commit()
     banco.close()
@@ -236,7 +282,7 @@ def editar(id):
             banco.close()
             flash("Prioridade inválida!", "erro")
             return redirect(f"/editar/{id}")
-
+        # Atualizar chamado
         banco.execute("""
             UPDATE chamados
             SET solicitante = ?,
@@ -245,6 +291,17 @@ def editar(id):
                 prioridade = ?
             WHERE id = ?
         """, (solicitante, titulo, descricao, prioridade, id))
+
+        # Registrar edição no histórico
+        banco.execute("""
+            INSERT INTO historico
+            (chamado_id, acao, descricao, data_hora)
+            VALUES (?, ?, ?, strftime('%d/%m/%Y %H:%M', 'now', 'localtime'))
+        """, (
+            id,
+            "Edição",
+            f"Chamado editado. Solicitante: {solicitante}, título: {titulo}, prioridade: {prioridade}"
+        ))
 
         banco.commit()
         banco.close()
@@ -264,6 +321,35 @@ def editar(id):
 
     return render_template("editar.html", chamado=chamado)
 
+# Visualizar histórico de um chamado
+@app.route("/historico/<int:id>")
+def historico(id):
+    banco = conectar()
+
+    # Buscar chamado
+    chamado = banco.execute(
+        "SELECT * FROM chamados WHERE id = ?",
+        (id,)
+    ).fetchone()
+
+    if chamado is None:
+        banco.close()
+        return "Chamado não encontrado", 404
+
+    # Buscar registros do histórico
+    registros = banco.execute("""
+        SELECT * FROM historico
+        WHERE chamado_id = ?
+        ORDER BY id DESC
+    """, (id,)).fetchall()
+
+    banco.close()
+
+    return render_template(
+        "historico.html",
+        chamado=chamado,
+        registros=registros
+    )
 
 # Executar aplicação
 if __name__ == "__main__":

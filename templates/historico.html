@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Histórico | HelpDesk TI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f3f5;
+            margin: 0;
+            padding: 30px;
+            color: #263238;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .registro {
+            border-left: 4px solid #1d3557;
+            padding: 12px 15px;
+            margin: 15px 0;
+            background: #f8fafc;
+        }
+
+        .data {
+            color: #777;
+            font-size: 13px;
+        }
+
+        .botao {
+            display: inline-block;
+            background: #1d3557;
+            color: white;
+            padding: 11px 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Histórico do chamado</h1>
+
+        <h3>#{{ chamado[0] }} - {{ chamado[2] }}</h3>
+
+        <p><b>Solicitante:</b> {{ chamado[1] }}</p>
+
+        <hr>
+
+        <h2>Registros de atividades</h2>
+
+        {% for registro in registros %}
+
+            <div class="registro">
+
+                <h3>{{ registro[2] }}</h3>
+
+                <p>{{ registro[3] }}</p>
+
+                <span class="data">
+                    {{ registro[4] }}
+                </span>
+
+            </div>
+
+        {% else %}
+
+            <p>Nenhuma atividade registrada para este chamado.</p>
+
+        {% endfor %}
+
+        <a href="/" class="botao">Voltar ao painel</a>
+
+    </div>
+
+</body>
+</html>
