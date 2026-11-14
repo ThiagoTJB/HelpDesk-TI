@@ -244,10 +244,36 @@ def atualizar(id):
 
 
 # Excluir chamado
+
 @app.route("/excluir/<int:id>", methods=["POST"])
 def excluir(id):
     banco = conectar()
 
+    # Buscar informações do chamado antes da exclusão
+    chamado = banco.execute(
+        "SELECT solicitante, titulo FROM chamados WHERE id = ?",
+        (id,)
+    ).fetchone()
+
+    if chamado is None:
+        banco.close()
+        return "Chamado não encontrado", 404
+
+    solicitante = chamado[0]
+    titulo = chamado[1]
+
+    # Registrar exclusão no histórico
+    banco.execute("""
+        INSERT INTO historico
+        (chamado_id, acao, descricao, data_hora)
+        VALUES (?, ?, ?, strftime('%d/%m/%Y %H:%M', 'now', 'localtime'))
+    """, (
+        id,
+        "Exclusão",
+        f"Chamado excluído. Solicitante: {solicitante}, título: {titulo}"
+    ))
+
+    # Excluir chamado
     banco.execute(
         "DELETE FROM chamados WHERE id = ?",
         (id,)
@@ -257,6 +283,7 @@ def excluir(id):
     banco.close()
 
     return redirect("/")
+
 
 
 # Editar chamado
@@ -350,6 +377,59 @@ def historico(id):
         chamado=chamado,
         registros=registros
     )
+
+
+
+# Visualizar histórico geral
+
+# Visualizar histórico geral
+@app.route("/historico-geral")
+def historico_geral():
+    banco = conectar()
+
+    busca = request.args.get("busca", "").strip()
+    acao = request.args.get("acao", "")
+
+    sql = """
+        SELECT historico.*
+        FROM historico
+        WHERE 1=1
+    """
+
+    parametros = []
+
+    if busca:
+        sql += """
+            AND (
+                CAST(historico.chamado_id AS TEXT) LIKE ?
+                OR historico.descricao LIKE ?
+            )
+        """
+
+        parametros.extend([
+            f"%{busca}%",
+            f"%{busca}%"
+        ])
+
+    if acao:
+        sql += " AND historico.acao = ?"
+        parametros.append(acao)
+
+    sql += " ORDER BY historico.id DESC"
+
+    registros = banco.execute(
+        sql, parametros
+    ).fetchall()
+
+    banco.close()
+
+    return render_template(
+        "historico_geral.html",
+        registros=registros,
+        busca=busca,
+        acao_selecionada=acao
+    )
+
 
 # Executar aplicação
 if __name__ == "__main__":

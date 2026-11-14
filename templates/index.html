@@ -201,16 +201,39 @@
                 grid-template-columns: 1fr;
             }
         }
+
+
+        .botao-historico {
+    display: inline-block;
+    background: #1d3557;
+    color: white;
+    padding: 12px 18px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.botao-historico:hover {
+    background: #294b78;
+}
+
+
+
+
     </style>
 </head>
 
 <body>
 
     <!-- Cabeçalho -->
-    <div class="cabecalho">
-        <h1>HelpDesk TI</h1>
-        <p>Painel de gerenciamento de chamados técnicos</p>
-    </div>
+<div class="cabecalho">
+    <h1>HelpDesk TI</h1>
+    <p>Painel de gerenciamento de chamados técnicos</p>
+
+    <a href="/historico-geral" class="botao-historico">
+        Histórico geral
+    </a>
+</div>
 
     <!-- Mensagens do sistema -->
     {% with mensagens = get_flashed_messages(with_categories=true) %}
