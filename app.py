@@ -245,15 +245,18 @@ def atualizar(id):
 
 # Excluir chamado
 
+
 @app.route("/excluir/<int:id>", methods=["POST"])
 def excluir(id):
     banco = conectar()
 
-    # Buscar informações do chamado antes da exclusão
-    chamado = banco.execute(
-        "SELECT solicitante, titulo FROM chamados WHERE id = ?",
-        (id,)
-    ).fetchone()
+    # Buscar todos os dados antes da exclusão
+    chamado = banco.execute("""
+        SELECT solicitante, titulo, descricao,
+               prioridade, status, data_abertura
+        FROM chamados
+        WHERE id = ?
+    """, (id,)).fetchone()
 
     if chamado is None:
         banco.close()
@@ -261,17 +264,28 @@ def excluir(id):
 
     solicitante = chamado[0]
     titulo = chamado[1]
+    descricao = chamado[2]
+    prioridade = chamado[3]
+    status = chamado[4]
+    data_abertura = chamado[5]
 
-    # Registrar exclusão no histórico
+    # Montar registro completo da exclusão
+    detalhes = (
+        f"Chamado excluído.\n"
+        f"Solicitante: {solicitante}\n"
+        f"Título: {titulo}\n"
+        f"Descrição: {descricao}\n"
+        f"Prioridade: {prioridade}\n"
+        f"Status: {status}\n"
+        f"Data de abertura: {data_abertura}"
+    )
+
+    # Salvar informações no histórico
     banco.execute("""
         INSERT INTO historico
         (chamado_id, acao, descricao, data_hora)
         VALUES (?, ?, ?, strftime('%d/%m/%Y %H:%M', 'now', 'localtime'))
-    """, (
-        id,
-        "Exclusão",
-        f"Chamado excluído. Solicitante: {solicitante}, título: {titulo}"
-    ))
+    """, (id, "Exclusão", detalhes))
 
     # Excluir chamado
     banco.execute(
@@ -283,7 +297,6 @@ def excluir(id):
     banco.close()
 
     return redirect("/")
-
 
 
 # Editar chamado
