@@ -66,6 +66,7 @@ def inicio():
     sql = "SELECT * FROM chamados WHERE 1=1"
     parametros = []
 
+  
     if status:
         sql += " AND status = ?"
         parametros.append(status)
@@ -74,7 +75,21 @@ def inicio():
         sql += " AND prioridade = ?"
         parametros.append(prioridade)
 
-        
+    if busca:
+        sql += """
+            AND (
+                solicitante LIKE ?
+                OR titulo LIKE ?
+                OR descricao LIKE ?
+            )
+        """
+
+        parametros.extend([
+            f"%{busca}%",
+            f"%{busca}%",
+            f"%{busca}%"
+        ])
+
 
     sql += " ORDER BY id DESC"
 

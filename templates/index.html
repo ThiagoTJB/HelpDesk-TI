@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>HelpDesk TI | Painel</title>
 
     <style>
@@ -65,6 +66,7 @@
             margin: 8px 0;
             border-radius: 5px;
             border: 1px solid #ccc;
+            font-family: Arial, sans-serif;
         }
 
         button {
@@ -72,6 +74,7 @@
             color: white;
             border: none;
             cursor: pointer;
+            font-weight: bold;
         }
 
         button:hover {
@@ -89,6 +92,7 @@
             color: #1d3557;
             text-decoration: none;
             text-align: center;
+            padding: 10px;
         }
 
         .chamado {
@@ -107,8 +111,75 @@
             margin: 10px 0;
         }
 
+        .botao-editar:hover {
+            background: #294b78;
+        }
+
+        .botao-excluir {
+            background: #b91c1c;
+        }
+
+        .botao-excluir:hover {
+            background: #991b1b;
+        }
+
         .status-form {
             max-width: 350px;
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .aberto {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .andamento {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .concluido {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .prioridade-alta {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .prioridade-media {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .prioridade-baixa {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .mensagem {
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .mensagem.sucesso {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .mensagem.erro {
+            background-color: #f8d7da;
+            color: #721c24;
         }
 
         @media (max-width: 750px) {
@@ -125,72 +196,30 @@
             }
         }
 
-
-.badge-status {
-    display: inline-block;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: bold;
-}
-
-.aberto {
-    background: #fee2e2;
-    color: #b91c1c;
-}
-
-.andamento {
-    background: #dbeafe;
-    color: #1d4ed8;
-}
-
-.concluido {
-    background: #dcfce7;
-    color: #15803d;
-}
-
-.prioridade-alta {
-    background: #fee2e2;
-    color: #b91c1c;
-}
-
-.prioridade-media {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.prioridade-baixa {
-    background: #dcfce7;
-    color: #15803d;
-}
-
-
-.mensagem {
-    padding: 12px;
-    margin: 15px 0;
-    border-radius: 6px;
-    font-weight: bold;
-}
-
-.mensagem.sucesso {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.mensagem.erro {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
+        @media (max-width: 400px) {
+            .painel {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
 <body>
 
+    <!-- Cabeçalho -->
     <div class="cabecalho">
         <h1>HelpDesk TI</h1>
         <p>Painel de gerenciamento de chamados técnicos</p>
     </div>
+
+    <!-- Mensagens do sistema -->
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% for categoria, mensagem in mensagens %}
+            <div class="mensagem {{ categoria }}">
+                {{ mensagem }}
+            </div>
+        {% endfor %}
+    {% endwith %}
 
     <!-- Indicadores -->
     <div class="painel">
@@ -224,19 +253,29 @@
 
         <form action="/cadastrar" method="POST">
 
-            <input type="text" name="solicitante"
-                   placeholder="Nome do solicitante" required>
+            <input
+                type="text"
+                name="solicitante"
+                placeholder="Nome do solicitante"
+                required
+            >
 
-            <input type="text" name="titulo"
-                   placeholder="Título do problema" required>
+            <input
+                type="text"
+                name="titulo"
+                placeholder="Título do problema"
+                required
+            >
 
-            <textarea name="descricao"
-                      placeholder="Descreva o problema"
-                      required></textarea>
+            <textarea
+                name="descricao"
+                placeholder="Descreva o problema"
+                required
+            ></textarea>
 
             <select name="prioridade">
                 <option value="Baixa">Baixa</option>
-                <option value="Media">Média</option>
+                <option value="Média">Média</option>
                 <option value="Alta">Alta</option>
             </select>
 
@@ -246,14 +285,36 @@
 
     </div>
 
-    <!-- Filtros -->
+    <!-- Pesquisa e filtros -->
     <div class="container">
 
-        <h2>Filtrar chamados</h2>
+        <h2>Pesquisar e filtrar chamados</h2>
 
+        <!-- Barra de pesquisa -->
+        <form action="/" method="GET">
+
+            <input
+                type="text"
+                name="busca"
+                placeholder="Pesquisar por solicitante, título ou descrição..."
+                value="{{ busca }}"
+            >
+
+            <button type="submit">Pesquisar chamados</button>
+
+        </form>
+
+        <!-- Filtros -->
         <form action="/" method="GET" class="filtros">
 
+            <input
+                type="hidden"
+                name="busca"
+                value="{{ busca }}"
+            >
+
             <select name="status">
+
                 <option value="">Todos os status</option>
 
                 <option value="Aberto"
@@ -270,9 +331,11 @@
                 {% if status_selecionado == 'Concluído' %}selected{% endif %}>
                     Concluído
                 </option>
+
             </select>
 
             <select name="prioridade">
+
                 <option value="">Todas as prioridades</option>
 
                 <option value="Baixa"
@@ -280,8 +343,8 @@
                     Baixa
                 </option>
 
-                <option value="Media"
-                {% if prioridade_selecionada == 'Media' %}selected{% endif %}>
+                <option value="Média"
+                {% if prioridade_selecionada == 'Média' %}selected{% endif %}>
                     Média
                 </option>
 
@@ -289,6 +352,7 @@
                 {% if prioridade_selecionada == 'Alta' %}selected{% endif %}>
                     Alta
                 </option>
+
             </select>
 
             <button type="submit">Filtrar</button>
@@ -306,51 +370,72 @@
 
         {% for chamado in chamados %}
 
-
-        <form action="/excluir/{{ chamado[0] }}" method="POST"
-      onsubmit="return confirm('Tem certeza que deseja excluir este chamado?');">
-    <button type="submit">Excluir chamado</button>
-</form>
-
             <div class="chamado">
 
                 <h3>#{{ chamado[0] }} - {{ chamado[2] }}</h3>
 
                 <p><b>Solicitante:</b> {{ chamado[1] }}</p>
+
                 <p><b>Descrição:</b> {{ chamado[3] }}</p>
+
                 <p><b>Data de abertura:</b> {{ chamado[6] }}</p>
 
-<p>
-    <b>Prioridade:</b>
+                <p>
+                    <b>Prioridade:</b>
 
-    <span class="badge-status
-        {% if chamado[4] == 'Alta' %}prioridade-alta
-        {% elif chamado[4] == 'Media' %}prioridade-media
-        {% else %}prioridade-baixa{% endif %}">
-        {{ chamado[4] }}
-    </span>
-</p>
+                    <span class="badge-status
+                        {% if chamado[4] == 'Alta' %}prioridade-alta
+                        {% elif chamado[4] == 'Média' %}prioridade-media
+                        {% else %}prioridade-baixa{% endif %}">
 
-<p>
-    <b>Status:</b>
+                        {{ chamado[4] }}
 
-    <span class="badge-status
-        {% if chamado[5] == 'Aberto' %}aberto
-        {% elif chamado[5] == 'Em andamento' %}andamento
-        {% else %}concluido{% endif %}">
-        {{ chamado[5] }}
-    </span>
-</p>
+                    </span>
+                </p>
 
-          
-                <a class="botao-editar"
-                   href="/editar/{{ chamado[0] }}">
+                <p>
+                    <b>Status:</b>
+
+                    <span class="badge-status
+                        {% if chamado[5] == 'Aberto' %}aberto
+                        {% elif chamado[5] == 'Em andamento' %}andamento
+                        {% else %}concluido{% endif %}">
+
+                        {{ chamado[5] }}
+
+                    </span>
+                </p>
+
+                <!-- Editar -->
+                <a
+                    class="botao-editar"
+                    href="/editar/{{ chamado[0] }}"
+                >
                     Editar chamado
                 </a>
 
-                <form class="status-form"
-                      action="/atualizar/{{ chamado[0] }}"
-                      method="POST">
+                <!-- Excluir -->
+                <form
+                    action="/excluir/{{ chamado[0] }}"
+                    method="POST"
+                    onsubmit="return confirm('Tem certeza que deseja excluir este chamado?');"
+                >
+
+                    <button
+                        type="submit"
+                        class="botao-excluir"
+                    >
+                        Excluir chamado
+                    </button>
+
+                </form>
+
+                <!-- Atualizar status -->
+                <form
+                    class="status-form"
+                    action="/atualizar/{{ chamado[0] }}"
+                    method="POST"
+                >
 
                     <label>Alterar status:</label>
 
