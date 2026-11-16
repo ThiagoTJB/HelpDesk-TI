@@ -299,6 +299,41 @@ def excluir(id):
     return redirect("/")
 
 
+# Excluir chamado permanentemente
+@app.route("/excluir-permanente/<int:id>", methods=["POST"])
+def excluir_permanente(id):
+
+    banco = conectar()
+
+    try:
+        # Apagar todos os registros de atividades
+        banco.execute(
+            "DELETE FROM historico WHERE chamado_id = ?",
+            (id,)
+        )
+
+        # Apagar o chamado
+        banco.execute(
+            "DELETE FROM chamados WHERE id = ?",
+            (id,)
+        )
+
+        banco.commit()
+
+        flash(
+            f"Chamado #{id} e todo seu histórico foram excluídos permanentemente!",
+            "sucesso"
+        )
+
+    except Exception:
+        banco.rollback()
+        flash("Erro ao excluir o chamado.", "erro")
+
+    finally:
+        banco.close()
+
+    return redirect("/historico-geral")
+
 # Editar chamado
 @app.route("/editar/<int:id>", methods=["GET", "POST"])
 def editar(id):
