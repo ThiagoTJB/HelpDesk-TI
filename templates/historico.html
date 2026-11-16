@@ -9,51 +9,173 @@
     <title>Histórico | HelpDesk TI</title>
 
     <style>
+        :root {
+            --fundo: #f2f7f7;
+            --branco: #ffffff;
+            --azul-claro: #eaf3f8;
+            --azul-principal: #39758a;
+            --azul-escuro: #28596b;
+            --verde-claro: #e5f3ef;
+            --verde-principal: #438b78;
+            --texto: #334b52;
+            --texto-suave: #71858a;
+            --borda: #dce8e7;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
             font-family: Arial, sans-serif;
-            background: #f1f3f5;
+            background: var(--fundo);
             margin: 0;
-            padding: 30px;
-            color: #263238;
+            padding: 35px 20px;
+            color: var(--texto);
         }
 
         .container {
-            max-width: 850px;
+            max-width: 900px;
+            width: 100%;
             margin: auto;
-            background: white;
-            padding: 25px;
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid var(--borda);
+            box-shadow: 0 4px 15px rgba(48, 91, 98, 0.06);
+        }
+
+        .cabecalho {
+            background: linear-gradient(120deg, #eaf3f8, #e5f3ef);
+            padding: 22px;
             border-radius: 10px;
+            margin-bottom: 22px;
+        }
+
+        h1 {
+            color: var(--azul-escuro);
+            font-size: 25px;
+            margin: 0 0 15px;
+        }
+
+        h2 {
+            color: var(--azul-escuro);
+            font-size: 19px;
+            margin: 25px 0 15px;
+        }
+
+        h3 {
+            color: var(--azul-escuro);
+            font-size: 16px;
+            margin-top: 0;
+        }
+
+        .identificacao {
+            background: #ffffff;
+            border: 1px solid var(--borda);
+            border-radius: 9px;
+            padding: 15px;
+        }
+
+        .identificacao h3 {
+            margin-bottom: 10px;
+        }
+
+        .identificacao p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .separador {
+            border: none;
+            border-top: 1px solid var(--borda);
+            margin: 25px 0;
         }
 
         .registro {
-            border-left: 4px solid #1d3557;
-            padding: 12px 15px;
-            margin: 15px 0;
-            background: #f8fafc;
+            border: 1px solid var(--borda);
+            border-left: 4px solid var(--azul-principal);
+            border-radius: 8px;
+            padding: 17px;
+            margin: 14px 0;
+            background: #f8fbfc;
+            transition: 0.2s;
+        }
+
+        .registro:hover {
+            border-color: #b8d8d2;
+            border-left-color: var(--verde-principal);
+            box-shadow: 0 4px 12px rgba(48, 91, 98, 0.06);
+        }
+
+        .registro h3 {
+            margin-bottom: 10px;
+        }
+
+        .registro p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0 0 12px;
+            color: var(--texto);
         }
 
         .data {
-            color: #777;
-            font-size: 13px;
+            color: var(--texto-suave);
+            font-size: 12px;
+        }
+
+        .vazio {
+            background: var(--verde-claro);
+            color: #347362;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 14px;
+        }
+
+        .acoes {
+            margin-top: 25px;
         }
 
         .botao {
             display: inline-block;
-            background: #1d3557;
-            color: white;
-            padding: 11px 16px;
+            background: var(--verde-claro);
+            color: #347362;
+            padding: 10px 16px;
             text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .botao:hover {
+            background: #cde8df;
         }
 
         @media (max-width: 600px) {
             body {
-                padding: 15px;
+                padding: 15px 10px;
+            }
+
+            .container {
+                padding: 18px;
+            }
+
+            .cabecalho {
+                padding: 17px;
+            }
+
+            h1 {
+                font-size: 21px;
+            }
+
+            .registro {
+                padding: 14px;
+            }
+
+            .botao {
+                display: block;
+                text-align: center;
             }
         }
     </style>
@@ -63,13 +185,19 @@
 
     <div class="container">
 
-        <h1>Histórico do chamado</h1>
+        <div class="cabecalho">
+            <h1>Histórico do chamado</h1>
 
-        <h3>#{{ chamado[0] }} - {{ chamado[2] }}</h3>
+            <div class="identificacao">
+                <h3>#{{ chamado[0] }} - {{ chamado[2] }}</h3>
 
-        <p><b>Solicitante:</b> {{ chamado[1] }}</p>
+                <p>
+                    <b>Solicitante:</b> {{ chamado[1] }}
+                </p>
+            </div>
+        </div>
 
-        <hr>
+        <hr class="separador">
 
         <h2>Registros de atividades</h2>
 
@@ -89,11 +217,15 @@
 
         {% else %}
 
-            <p>Nenhuma atividade registrada para este chamado.</p>
+            <div class="vazio">
+                Nenhuma atividade registrada para este chamado.
+            </div>
 
         {% endfor %}
 
-        <a href="/" class="botao">Voltar ao painel</a>
+        <div class="acoes">
+            <a href="/" class="botao">Voltar ao painel</a>
+        </div>
 
     </div>
 

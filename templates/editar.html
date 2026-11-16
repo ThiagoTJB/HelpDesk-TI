@@ -1,97 +1,254 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar chamado - HelpDesk TI</title>
 
     <style>
-        body {
-            font-family: Arial;
-            background: #f1f3f5;
-            margin: 40px;
+        :root {
+            --fundo: #f2f7f7;
+            --branco: #ffffff;
+            --azul-claro: #eaf3f8;
+            --azul-medio: #d5e5f2;
+            --azul-principal: #39758a;
+            --azul-escuro: #28596b;
+            --verde-claro: #e5f3ef;
+            --verde-principal: #438b78;
+            --texto: #334b52;
+            --texto-suave: #71858a;
+            --borda: #dce8e7;
         }
 
-        .container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            max-width: 700px;
-        }
-
-        h1 {
-            color: #1d3557;
-        }
-
-        input, textarea, select, button {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin: 12px 0;
+        * {
             box-sizing: border-box;
         }
 
-        button {
-            background: #1d3557;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--fundo);
+            color: var(--texto);
+            margin: 0;
+            padding: 35px 20px;
         }
 
-        a {
-            color: #1d3557;
+        .container {
+            background: var(--branco);
+            max-width: 680px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid var(--borda);
+            box-shadow: 0 4px 15px rgba(48, 91, 98, 0.06);
+        }
+
+        .cabecalho {
+            background: linear-gradient(120deg, #eaf3f8, #e5f3ef);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: var(--azul-escuro);
+            font-size: 23px;
+            margin: 0 0 8px;
+        }
+
+        .subtitulo {
+            color: var(--texto-suave);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin: 17px 0 7px;
+            color: var(--texto);
+        }
+
+        input,
+        textarea,
+        select {
+            display: block;
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid var(--borda);
+            border-radius: 7px;
+            font-size: 14px;
+            color: var(--texto);
+            background: #ffffff;
+            font-family: Arial, sans-serif;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #83b9b3;
+            box-shadow: 0 0 0 3px rgba(131, 185, 179, 0.15);
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .acoes {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: var(--azul-principal);
+            color: #ffffff;
+            border: none;
+            border-radius: 7px;
+            padding: 10px 17px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: var(--azul-escuro);
+        }
+
+        .voltar {
+            display: inline-block;
+            background: var(--verde-claro);
+            color: #347362;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .voltar:hover {
+            background: #cde8df;
+        }
+
+        .mensagem {
+            padding: 11px 13px;
+            border-radius: 7px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .mensagem.erro {
+            background: #f8e8e8;
+            color: #a64d55;
+        }
+
+        .mensagem.sucesso {
+            background: var(--verde-claro);
+            color: #347362;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .acoes {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .acoes button,
+            .acoes .voltar {
+                text-align: center;
+                width: 100%;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <h1>Editar chamado #{{ chamado[0] }}</h1>
+        <div class="cabecalho">
+            <h1>Editar chamado #{{ chamado[0] }}</h1>
+            <p class="subtitulo">Atualize as informações da solicitação técnica.</p>
+        </div>
 
-    <form method="POST">
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% if mensagens %}
+                {% for categoria, mensagem in mensagens %}
+                    <div class="mensagem {{ categoria }}">
+                        {{ mensagem }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-        <label>Solicitante</label>
-        <input type="text" name="solicitante"
-        value="{{ chamado[1] }}" required>
+        <form method="POST">
 
-        <label>Título</label>
-        <input type="text" name="titulo"
-        value="{{ chamado[2] }}" required>
+            <label>Solicitante</label>
+            <input
+                type="text"
+                name="solicitante"
+                value="{{ chamado[1] }}"
+                required
+            >
 
-        <label>Descrição</label>
-        <textarea name="descricao"
-        required>{{ chamado[3] }}</textarea>
+            <label>Título do chamado</label>
+            <input
+                type="text"
+                name="titulo"
+                value="{{ chamado[2] }}"
+                required
+            >
 
-        <label>Prioridade</label>
-        <select name="prioridade">
+            <label>Descrição do problema</label>
+            <textarea name="descricao" required>{{ chamado[3] }}</textarea>
 
-            <option value="Baixa"
-            {% if chamado[4] == 'Baixa' %}selected{% endif %}>
-                Baixa
-            </option>
+            <label>Prioridade</label>
+            <select name="prioridade" required>
 
-            <option value="Media"
-            {% if chamado[4] == 'Media' %}selected{% endif %}>
-                Média
-            </option>
+                <option value="Baixa"
+                    {% if chamado[4] == 'Baixa' %}selected{% endif %}>
+                    Baixa
+                </option>
 
-            <option value="Alta"
-            {% if chamado[4] == 'Alta' %}selected{% endif %}>
-                Alta
-            </option>
+                <option value="Média"
+                    {% if chamado[4] == 'Média' or chamado[4] == 'Media' %}selected{% endif %}>
+                    Média
+                </option>
 
-        </select>
+                <option value="Alta"
+                    {% if chamado[4] == 'Alta' %}selected{% endif %}>
+                    Alta
+                </option>
 
-        <button type="submit">Salvar alterações</button>
+            </select>
 
-    </form>
+            <div class="acoes">
+                <button type="submit">Salvar alterações</button>
+                <a href="/" class="voltar">Voltar ao painel</a>
+            </div>
 
-    <a href="/">Voltar para os chamados</a>
+        </form>
 
-</div>
+    </div>
 
 </body>
 </html>

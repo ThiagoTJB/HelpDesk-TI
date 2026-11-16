@@ -9,109 +9,257 @@
     <title>Histórico Geral | HelpDesk TI</title>
 
     <style>
+        :root {
+            --fundo: #f2f7f7;
+            --branco: #ffffff;
+            --azul-claro: #eaf3f8;
+            --azul-medio: #d5e5f2;
+            --azul-principal: #39758a;
+            --azul-escuro: #28596b;
+            --verde-claro: #e5f3ef;
+            --verde-principal: #438b78;
+            --texto: #334b52;
+            --texto-suave: #71858a;
+            --borda: #dce8e7;
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
             font-family: Arial, sans-serif;
-            background: #f1f3f5;
+            background: var(--fundo);
             margin: 0;
-            padding: 30px;
-            color: #263238;
+            padding: 35px 20px;
+            color: var(--texto);
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
+            width: 100%;
             margin: auto;
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid var(--borda);
+            box-shadow: 0 4px 15px rgba(48, 91, 98, 0.06);
         }
 
+        .cabecalho {
+            background: linear-gradient(120deg, #eaf3f8, #e5f3ef);
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: var(--azul-escuro);
+            font-size: 25px;
+            margin: 0 0 10px;
+        }
+
+        h2 {
+            color: var(--azul-escuro);
+            font-size: 19px;
+            margin-bottom: 15px;
+        }
+
+        .descricao {
+            color: var(--texto-suave);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .separador {
+            border: none;
+            border-top: 1px solid var(--borda);
+            margin: 25px 0;
+        }
+
+        /* Pesquisa e filtros */
+        .filtros {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 220px 110px;
+            gap: 10px;
+            margin: 20px 0 10px;
+            align-items: center;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid var(--borda);
+            border-radius: 7px;
+            font-size: 13px;
+            color: var(--texto);
+            background: #ffffff;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #83b9b3;
+            box-shadow: 0 0 0 3px rgba(131, 185, 179, 0.15);
+        }
+
+        button {
+            padding: 11px 16px;
+            background: var(--azul-principal);
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: var(--azul-escuro);
+        }
+
+        .limpar {
+            display: inline-block;
+            color: var(--verde-principal);
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        .limpar:hover {
+            color: var(--azul-escuro);
+        }
+
+        /* Cards de atividades */
         .registro {
-            border-left: 5px solid #1d3557;
-            padding: 15px;
-            margin: 15px 0;
-            background: #f8fafc;
+            border: 1px solid var(--borda);
+            border-left: 4px solid var(--azul-principal);
+            border-radius: 8px;
+            padding: 17px;
+            margin: 14px 0;
+            background: #f8fbfc;
+            transition: 0.2s;
+        }
+
+        .registro:hover {
+            box-shadow: 0 4px 12px rgba(48, 91, 98, 0.07);
+            border-color: #b8d8d2;
         }
 
         .registro h3 {
-            margin-top: 0;
+            color: var(--azul-escuro);
+            font-size: 16px;
+            margin: 0 0 15px;
         }
 
+        .registro p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 10px 0;
+            color: var(--texto);
+        }
+
+        /* Cores por tipo de atividade */
         .cadastro {
-            border-color: #15803d;
+            border-left-color: var(--verde-principal);
+        }
+
+        .cadastro h3 {
+            color: #347362;
         }
 
         .edicao {
-            border-color: #2563eb;
-        }
-
-        .exclusao {
-            border-color: #b91c1c;
+            border-left-color: var(--azul-principal);
         }
 
         .alteracao {
-            border-color: #d97706;
+            border-left-color: #83a99d;
+        }
+
+        .exclusao {
+            border-left-color: #c77c80;
+        }
+
+        .exclusao h3 {
+            color: #a64d55;
         }
 
         .data {
-            color: #777;
-            font-size: 13px;
+            display: block;
+            color: var(--texto-suave);
+            font-size: 12px;
+            margin-top: 13px;
+        }
+
+        .vazio {
+            background: var(--verde-claro);
+            color: #347362;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 14px;
+        }
+
+        /* Botão de retorno */
+        .acoes {
+            margin-top: 25px;
         }
 
         .botao {
             display: inline-block;
-            background: #1d3557;
-            color: white;
-            padding: 12px 18px;
+            background: var(--verde-claro);
+            color: #347362;
+            padding: 10px 16px;
             text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
         }
 
-        @media (max-width: 600px) {
+        .botao:hover {
+            background: #cde8df;
+        }
+
+        /* Responsividade */
+        @media (max-width: 750px) {
             body {
-                padding: 15px;
+                padding: 15px 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .filtros {
+                grid-template-columns: 1fr;
+            }
+
+            .filtros button {
+                width: fit-content;
             }
         }
 
-        .filtros {
-    display: grid;
-    grid-template-columns: 1fr 220px 120px;
-    gap: 10px;
-    margin: 20px 0;
-}
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
 
-input, select, button {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 15px;
-}
+            .cabecalho {
+                padding: 17px;
+            }
 
-button {
-    background: #1d3557;
-    color: white;
-    cursor: pointer;
-}
+            h1 {
+                font-size: 21px;
+            }
 
-button:hover {
-    background: #294b78;
-}
-
-.limpar {
-    display: inline-block;
-    color: #1d3557;
-    margin-bottom: 15px;
-}
-
-@media (max-width: 600px) {
-    .filtros {
-        grid-template-columns: 1fr;
-    }
-}
+            .botao {
+                display: block;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 
@@ -119,54 +267,55 @@ button:hover {
 
     <div class="container">
 
-        <h1>Histórico geral</h1>
-
-        <p>Registro de atividades realizadas no HelpDesk TI.</p>
-
-        <hr>
+        <div class="cabecalho">
+            <h1>Histórico geral</h1>
+            <p class="descricao">
+                Registro de atividades realizadas no HelpDesk TI.
+            </p>
+        </div>
 
         <h2>Atividades registradas</h2>
 
         <form action="/historico-geral" method="GET" class="filtros">
 
-    <input
-        type="text"
-        name="busca"
-        placeholder="Pesquisar chamado ou atividade..."
-        value="{{ busca }}"
-    >
+            <input
+                type="text"
+                name="busca"
+                placeholder="Pesquisar chamado ou atividade..."
+                value="{{ busca }}"
+            >
 
-    <select name="acao">
+            <select name="acao">
 
-        <option value="">Todas as atividades</option>
+                <option value="">Todas as atividades</option>
 
-        <option value="Cadastro"
-        {% if acao_selecionada == 'Cadastro' %}selected{% endif %}>
-            Cadastro
-        </option>
+                <option value="Cadastro"
+                    {% if acao_selecionada == 'Cadastro' %}selected{% endif %}>
+                    Cadastro
+                </option>
 
-        <option value="Edição"
-        {% if acao_selecionada == 'Edição' %}selected{% endif %}>
-            Edição
-        </option>
+                <option value="Edição"
+                    {% if acao_selecionada == 'Edição' %}selected{% endif %}>
+                    Edição
+                </option>
 
-        <option value="Alteração de status"
-        {% if acao_selecionada == 'Alteração de status' %}selected{% endif %}>
-            Alteração de status
-        </option>
+                <option value="Alteração de status"
+                    {% if acao_selecionada == 'Alteração de status' %}selected{% endif %}>
+                    Alteração de status
+                </option>
 
-        <option value="Exclusão"
-        {% if acao_selecionada == 'Exclusão' %}selected{% endif %}>
-            Exclusão
-        </option>
+                <option value="Exclusão"
+                    {% if acao_selecionada == 'Exclusão' %}selected{% endif %}>
+                    Exclusão
+                </option>
 
-    </select>
+            </select>
 
-    <button type="submit">Filtrar</button>
+            <button type="submit">Filtrar</button>
 
-</form>
+        </form>
 
-<a href="/historico-geral" class="limpar">Limpar filtros</a>
+        <a href="/historico-geral" class="limpar">Limpar filtros</a>
 
         {% for registro in registros %}
 
@@ -193,11 +342,15 @@ button:hover {
 
         {% else %}
 
-            <p>Nenhuma atividade registrada.</p>
+            <div class="vazio">
+                Nenhuma atividade registrada.
+            </div>
 
         {% endfor %}
 
-        <a href="/" class="botao">Voltar ao painel</a>
+        <div class="acoes">
+            <a href="/" class="botao">Voltar ao painel</a>
+        </div>
 
     </div>
 

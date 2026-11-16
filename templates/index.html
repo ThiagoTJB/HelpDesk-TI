@@ -21,14 +21,31 @@
             color: #263238;
         }
 
-        h1 {
+        h1, h2, h3 {
             color: #1d3557;
         }
 
+        /* Cabeçalho */
         .cabecalho {
             margin-bottom: 25px;
         }
 
+        .botao-historico {
+            display: inline-block;
+            background: #1d3557;
+            color: white;
+            padding: 9px 15px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .botao-historico:hover {
+            background: #294b78;
+        }
+
+        /* Indicadores */
         .painel {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -53,6 +70,7 @@
             margin: 0;
         }
 
+        /* Containers */
         .container {
             background: white;
             padding: 22px;
@@ -60,6 +78,7 @@
             margin-bottom: 20px;
         }
 
+        /* Campos */
         input, textarea, select, button {
             width: 100%;
             padding: 11px;
@@ -67,6 +86,12 @@
             border-radius: 5px;
             border: 1px solid #ccc;
             font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
         }
 
         button {
@@ -81,9 +106,10 @@
             background: #294b78;
         }
 
+        /* Filtros */
         .filtros {
             display: grid;
-            grid-template-columns: 1fr 1fr 150px 100px;
+            grid-template-columns: 1fr 1fr 150px 120px;
             gap: 10px;
             align-items: center;
         }
@@ -93,45 +119,123 @@
             text-decoration: none;
             text-align: center;
             padding: 10px;
+            font-size: 14px;
         }
 
+        /* Grade dos chamados */
+        .grade-chamados {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        /* Card individual */
         .chamado {
-            border-bottom: 1px solid #ddd;
-            padding: 15px 0 20px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 0;
+            min-width: 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .chamado:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.10);
+        }
+
+        .chamado h3 {
+            font-size: 18px;
+            margin: 0 0 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .chamado p {
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        /* Botões dos chamados */
+        .acoes-chamado {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 7px;
+            margin-top: 15px;
         }
 
         .botao-editar {
             display: block;
             background: #1d3557;
             color: white;
-            padding: 11px;
+            padding: 9px 6px;
             text-align: center;
             text-decoration: none;
             border-radius: 5px;
-            margin: 10px 0;
+            font-size: 12px;
+            font-weight: bold;
+            margin: 0;
         }
 
         .botao-editar:hover {
             background: #294b78;
         }
 
+        .form-excluir {
+            grid-column: 1 / -1;
+            margin: 0;
+        }
+
         .botao-excluir {
+            width: 100%;
             background: #b91c1c;
+            color: white;
+            padding: 9px 6px;
+            font-size: 12px;
+            border: none;
+            border-radius: 5px;
+            margin: 0;
         }
 
         .botao-excluir:hover {
             background: #991b1b;
         }
 
+        /* Atualização de status */
         .status-form {
-            max-width: 350px;
+            margin-top: 15px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 12px;
         }
 
+        .status-form label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .status-form select {
+            padding: 8px;
+            font-size: 13px;
+            margin: 5px 0;
+        }
+
+        .status-form button {
+            padding: 8px;
+            font-size: 12px;
+            margin: 5px 0 0;
+        }
+
+        /* Etiquetas */
         .badge-status {
             display: inline-block;
             padding: 5px 12px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
         }
 
@@ -165,6 +269,7 @@
             color: #15803d;
         }
 
+        /* Mensagens */
         .mensagem {
             padding: 12px;
             margin: 15px 0;
@@ -182,66 +287,400 @@
             color: #721c24;
         }
 
-        @media (max-width: 750px) {
-            body {
-                padding: 15px;
+        /* Responsividade */
+        @media (max-width: 1000px) {
+            .grade-chamados {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
             .painel {
                 grid-template-columns: repeat(2, 1fr);
             }
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 15px;
+            }
+
+            .grade-chamados {
+                grid-template-columns: 1fr;
+            }
+
+            .painel {
+                grid-template-columns: 1fr 1fr;
+            }
 
             .filtros {
                 grid-template-columns: 1fr;
             }
-        }
 
-        @media (max-width: 400px) {
-            .painel {
-                grid-template-columns: 1fr;
+            .container {
+                padding: 16px;
             }
         }
 
 
-        .botao-historico {
-    display: inline-block;
-    background: #1d3557;
-    color: white;
-    padding: 12px 18px;
-    text-decoration: none;
-    border-radius: 5px;
+/* ===== AJUSTE DOS BLOCOS DE CADASTRO E PESQUISA ===== */
+
+/* Containers com aparência mais leve */
+.container {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    border: 1px solid #e5eaf0;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* Títulos dos blocos */
+.container h2 {
+    font-size: 19px;
+    margin: 0 0 16px;
+    color: #1d3557;
+}
+
+/* Campos mais compactos */
+.container input:not([type="hidden"]),
+.container textarea,
+.container select {
+    padding: 9px 12px;
+    font-size: 13px;
+    border: 1px solid #d5dce5;
+    border-radius: 7px;
+    margin: 5px 0;
+    background: #fff;
+    color: #263238;
+}
+
+.container textarea {
+    min-height: 75px;
+}
+
+/* Botões menores e padronizados */
+.container button {
+    width: auto;
+    padding: 9px 16px;
+    font-size: 13px;
+    border-radius: 7px;
+    margin: 5px 0;
+    transition: background 0.2s;
+}
+
+/* Cadastro */
+.container form[action="/cadastrar"] {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.container form[action="/cadastrar"] button {
+    align-self: flex-start;
+    min-width: 155px;
+}
+
+/* Pesquisa */
+.container form[action="/"]:not(.filtros) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 155px;
+    gap: 10px;
+    align-items: center;
+}
+
+.container form[action="/"]:not(.filtros) input {
+    width: 100%;
+    margin: 0;
+}
+
+.container form[action="/"]:not(.filtros) button {
+    width: 100%;
+    margin: 0;
+}
+
+/* Filtros */
+.container .filtros {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 115px 110px;
+    gap: 10px;
+    align-items: center;
     margin-top: 10px;
 }
 
-.botao-historico:hover {
-    background: #294b78;
+.container .filtros select {
+    width: 100%;
+    margin: 0;
+}
+
+.container .filtros button {
+    width: 100%;
+    margin: 0;
+    padding: 9px 10px;
+}
+
+.container .filtros .limpar {
+    font-size: 13px;
+    padding: 8px;
+    white-space: nowrap;
+}
+
+/* Telas menores */
+@media (max-width: 750px) {
+    .container form[action="/"]:not(.filtros) {
+        grid-template-columns: 1fr;
+    }
+
+    .container form[action="/"]:not(.filtros) button {
+        width: fit-content;
+    }
+
+    .container .filtros {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .container .filtros button,
+    .container .filtros .limpar {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container .filtros {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        padding: 15px;
+    }
 }
 
 
+/* =================================
+   IDENTIDADE VISUAL HELPDESK TI
+   TEMA AZUL + VERDE
+================================= */
 
+:root {
+    --fundo: #f2f7f7;
+    --branco: #ffffff;
+    --azul-claro: #eaf3f8;
+    --azul-medio: #d5e5f2;
+    --azul-principal: #39758a;
+    --azul-escuro: #28596b;
+    --verde-claro: #e5f3ef;
+    --verde-medio: #cde8df;
+    --verde-principal: #438b78;
+    --texto: #334b52;
+    --texto-suave: #71858a;
+    --borda: #dce8e7;
+}
+
+/* Fundo geral */
+body {
+    background: var(--fundo);
+    color: var(--texto);
+}
+
+/* Títulos */
+h1, h2, h3 {
+    color: var(--azul-escuro);
+}
+
+/* Cabeçalho */
+.cabecalho {
+    background: linear-gradient(120deg, #eaf3f8, #e5f3ef);
+    padding: 24px;
+    border-radius: 14px;
+    border: 1px solid var(--borda);
+}
+
+.cabecalho p {
+    color: var(--texto-suave);
+}
+
+/* Containers */
+.container {
+    background: var(--branco);
+    border: 1px solid var(--borda);
+    box-shadow: 0 3px 12px rgba(48, 91, 98, 0.05);
+}
+
+/* Indicadores */
+.card {
+    background: linear-gradient(135deg, #ffffff, #f0f7f8);
+    border-left: 4px solid var(--azul-principal);
+    box-shadow: 0 3px 10px rgba(48, 91, 98, 0.05);
+}
+
+.card:nth-child(even) {
+    border-left-color: var(--verde-principal);
+}
+
+.card h2 {
+    color: var(--azul-escuro);
+}
+
+.card p {
+    color: var(--texto-suave);
+}
+
+/* Cards dos chamados */
+.chamado {
+    background: #ffffff;
+    border: 1px solid var(--borda);
+    box-shadow: 0 3px 12px rgba(48, 91, 98, 0.06);
+}
+
+.chamado:hover {
+    border-color: #b8d8d2;
+    box-shadow: 0 7px 18px rgba(48, 91, 98, 0.10);
+}
+
+.chamado h3 {
+    color: var(--azul-escuro);
+}
+
+/* Campos */
+input, textarea, select {
+    background: #ffffff;
+    color: var(--texto);
+    border-color: var(--borda);
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #83b9b3;
+    box-shadow: 0 0 0 3px rgba(131, 185, 179, 0.15);
+}
+
+/* Botões principais */
+button {
+    background: var(--azul-principal);
+    color: #ffffff;
+}
+
+button:hover {
+    background: var(--azul-escuro);
+}
+
+/* Botão histórico */
+.botao-historico {
+    background: var(--verde-principal);
+    color: #ffffff;
+}
+
+.botao-historico:hover {
+    background: #347362;
+}
+
+/* Botões de edição e histórico */
+.botao-editar {
+    background: var(--azul-claro);
+    color: var(--azul-escuro);
+    border: 1px solid #d5e5f2;
+}
+
+.botao-editar:hover {
+    background: var(--azul-medio);
+}
+
+/* Exclusão */
+.botao-excluir {
+    background: #f8e8e8;
+    color: #a64d55;
+    border: 1px solid #f0d4d5;
+}
+
+.botao-excluir:hover {
+    background: #f1dada;
+}
+
+/* Status */
+.aberto {
+    background: #f8e8e8;
+    color: #a64d55;
+}
+
+.andamento {
+    background: var(--azul-claro);
+    color: var(--azul-escuro);
+}
+
+.concluido {
+    background: var(--verde-claro);
+    color: #347362;
+}
+
+/* Prioridades */
+.prioridade-alta {
+    background: #f8e8e8;
+    color: #a64d55;
+}
+
+.prioridade-media {
+    background: #f8f0dc;
+    color: #92713b;
+}
+
+.prioridade-baixa {
+    background: var(--verde-claro);
+    color: #347362;
+}
+
+/* Formulário de status */
+.status-form {
+    border-top-color: var(--borda);
+}
+
+/* Links */
+.limpar {
+    color: var(--azul-principal);
+}
+
+.limpar:hover {
+    color: var(--verde-principal);
+}
+
+/* Mensagens */
+.mensagem.sucesso {
+    background: var(--verde-claro);
+    color: #347362;
+}
+
+.mensagem.erro {
+    background: #f8e8e8;
+    color: #a64d55;
+}
 
     </style>
+
 </head>
 
 <body>
 
     <!-- Cabeçalho -->
-<div class="cabecalho">
-    <h1>HelpDesk TI</h1>
-    <p>Painel de gerenciamento de chamados técnicos</p>
+    <div class="cabecalho">
 
-    <a href="/historico-geral" class="botao-historico">
-        Histórico geral
-    </a>
-</div>
+        <h1>HelpDesk TI</h1>
+
+        <p>Painel de gerenciamento de chamados técnicos</p>
+
+        <a href="/historico-geral" class="botao-historico">
+            Histórico geral
+        </a>
+
+    </div>
 
     <!-- Mensagens do sistema -->
     {% with mensagens = get_flashed_messages(with_categories=true) %}
+
         {% for categoria, mensagem in mensagens %}
+
             <div class="mensagem {{ categoria }}">
                 {{ mensagem }}
             </div>
+
         {% endfor %}
+
     {% endwith %}
 
     <!-- Indicadores -->
@@ -313,7 +752,7 @@
 
         <h2>Pesquisar e filtrar chamados</h2>
 
-        <!-- Barra de pesquisa -->
+        <!-- Pesquisa -->
         <form action="/" method="GET">
 
             <input
@@ -386,120 +825,135 @@
 
     </div>
 
-    <!-- Listagem -->
+    <!-- Listagem de chamados -->
     <div class="container">
 
         <h2>Chamados cadastrados</h2>
 
-        {% for chamado in chamados %}
+        <div class="grade-chamados">
 
-            <div class="chamado">
+            {% for chamado in chamados %}
 
-                <h3>#{{ chamado[0] }} - {{ chamado[2] }}</h3>
+                <div class="chamado">
 
-                <p><b>Solicitante:</b> {{ chamado[1] }}</p>
+                    <h3>#{{ chamado[0] }} - {{ chamado[2] }}</h3>
 
-                <p><b>Descrição:</b> {{ chamado[3] }}</p>
+                    <p>
+                        <b>Solicitante:</b> {{ chamado[1] }}
+                    </p>
 
-                <p><b>Data de abertura:</b> {{ chamado[6] }}</p>
+                    <p>
+                        <b>Descrição:</b> {{ chamado[3] }}
+                    </p>
 
-                <p>
-                    <b>Prioridade:</b>
+                    <p>
+                        <b>Data de abertura:</b> {{ chamado[6] }}
+                    </p>
 
-                    <span class="badge-status
-                        {% if chamado[4] == 'Alta' %}prioridade-alta
-                        {% elif chamado[4] == 'Média' %}prioridade-media
-                        {% else %}prioridade-baixa{% endif %}">
+                    <p>
+                        <b>Prioridade:</b>
 
-                        {{ chamado[4] }}
+                        <span class="badge-status
+                            {% if chamado[4] == 'Alta' %}prioridade-alta
+                            {% elif chamado[4] == 'Média' %}prioridade-media
+                            {% else %}prioridade-baixa{% endif %}">
 
-                    </span>
-                </p>
+                            {{ chamado[4] }}
 
-                <p>
-                    <b>Status:</b>
+                        </span>
+                    </p>
 
-                    <span class="badge-status
-                        {% if chamado[5] == 'Aberto' %}aberto
-                        {% elif chamado[5] == 'Em andamento' %}andamento
-                        {% else %}concluido{% endif %}">
+                    <p>
+                        <b>Status:</b>
 
-                        {{ chamado[5] }}
+                        <span class="badge-status
+                            {% if chamado[5] == 'Aberto' %}aberto
+                            {% elif chamado[5] == 'Em andamento' %}andamento
+                            {% else %}concluido{% endif %}">
 
-                    </span>
-                </p>
+                            {{ chamado[5] }}
 
-                <!-- Editar -->
-                <a
-                    class="botao-editar"
-                    href="/editar/{{ chamado[0] }}"
-                >
-                    Editar chamado
-                </a>
+                        </span>
+                    </p>
 
-                <!-- Histórico -->
-<a
-    class="botao-editar"
-    href="/historico/{{ chamado[0] }}"
->
-    Ver histórico
-</a>
+                    <!-- Ações -->
+                    <div class="acoes-chamado">
 
-                <!-- Excluir -->
-                <form
-                    action="/excluir/{{ chamado[0] }}"
-                    method="POST"
-                    onsubmit="return confirm('Tem certeza que deseja excluir este chamado?');"
-                >
+                        <a
+                            class="botao-editar"
+                            href="/editar/{{ chamado[0] }}"
+                        >
+                            Editar
+                        </a>
 
-                    <button
-                        type="submit"
-                        class="botao-excluir"
+                        <a
+                            class="botao-editar"
+                            href="/historico/{{ chamado[0] }}"
+                        >
+                            Histórico
+                        </a>
+
+                        <form
+                            class="form-excluir"
+                            action="/excluir/{{ chamado[0] }}"
+                            method="POST"
+                            onsubmit="return confirm('Tem certeza que deseja excluir este chamado?');"
+                        >
+
+                            <button
+                                type="submit"
+                                class="botao-excluir"
+                            >
+                                Excluir chamado
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                    <!-- Atualizar status -->
+                    <form
+                        class="status-form"
+                        action="/atualizar/{{ chamado[0] }}"
+                        method="POST"
                     >
-                        Excluir chamado
-                    </button>
 
-                </form>
+                        <label>Alterar status:</label>
 
-                <!-- Atualizar status -->
-                <form
-                    class="status-form"
-                    action="/atualizar/{{ chamado[0] }}"
-                    method="POST"
-                >
+                        <select name="status">
 
-                    <label>Alterar status:</label>
+                            <option value="Aberto"
+                            {% if chamado[5] == 'Aberto' %}selected{% endif %}>
+                                Aberto
+                            </option>
 
-                    <select name="status">
+                            <option value="Em andamento"
+                            {% if chamado[5] == 'Em andamento' %}selected{% endif %}>
+                                Em andamento
+                            </option>
 
-                        <option value="Aberto"
-                        {% if chamado[5] == 'Aberto' %}selected{% endif %}>
-                            Aberto
-                        </option>
+                            <option value="Concluído"
+                            {% if chamado[5] == 'Concluído' %}selected{% endif %}>
+                                Concluído
+                            </option>
 
-                        <option value="Em andamento"
-                        {% if chamado[5] == 'Em andamento' %}selected{% endif %}>
-                            Em andamento
-                        </option>
+                        </select>
 
-                        <option value="Concluído"
-                        {% if chamado[5] == 'Concluído' %}selected{% endif %}>
-                            Concluído
-                        </option>
+                        <button type="submit">
+                            Salvar alteração
+                        </button>
 
-                    </select>
+                    </form>
 
-                    <button type="submit">Salvar alteração</button>
+                </div>
 
-                </form>
+            {% else %}
 
-            </div>
+                <p>Nenhum chamado encontrado.</p>
 
-        {% else %}
+            {% endfor %}
 
-            <p>Nenhum chamado encontrado.</p>
-
-        {% endfor %}
+        </div>
 
     </div>
 
